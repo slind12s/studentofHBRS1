@@ -3,48 +3,62 @@ package org.hbrs.se.ws20.uebung2;
 import java.util.ArrayList;
 
 public class Container implements Member {
-    ArrayList <Integer> list = new ArrayList<>();
-    int size = 0;
+    ArrayList <Member> list = new ArrayList<>();
     Member member;
+    int schluessel;
+
+
 
     public void addMember(Member member1) throws ContainerException {
-        member = member1;
-        for( int aktuellePos = 0; aktuellePos <= size; ++aktuellePos){
-            if(member.getID().equals(list.get(aktuellePos))){
-                throw new ContainerException("Das Member-Objekt mit der ID " + member.getID() + "ist bereits vorhanden!");
+        this.member = member1;
+        for (int aktuellePos = 0; aktuellePos < size(); ++aktuellePos){
+            Member aktuell = list.get(aktuellePos);
+            if( member.getID().equals(aktuell.getID())){
+                throw new ContainerException();
             }
+
         }
-        list.add(member.getID());
-        ++size;
+        list.add(member);
+
+
     }
     public String deleteMember (Integer id){
-        for( int aktuellePos = 0; aktuellePos <= size; ++aktuellePos){
-            if(id.equals(list.get(aktuellePos))){
+        boolean vorhanden = false;
+        for( int aktuellePos = 0; aktuellePos < size(); ++aktuellePos){
+            Member aktuell = list.get(aktuellePos);
+            if(id.equals(aktuell.getID())){
+                vorhanden = true;
                 list.remove(aktuellePos);
             }
-            if(aktuellePos == size){
-                return "Die zugehörige ID befindet sich nicht in der Liste";
-            }
         }
+
+        if(vorhanden == false){
+            return "Die zugehörige ID befindet sich nicht in der Liste";
+        }
+
         return "Die ID wurde erfolgreich aus der Liste entfernt";
     }
+    //Wenn man keine Exception nutzt kann es zu Problemen beim Verständnis kommen.
     public void dump(){
-        String Id = toString(member.getID());
-
-
+        Container clone = new Container();
+        clone.list = this.list;
+        while(clone.size()!= 0){
+            System.out.println(clone.toString());
+            list.remove(clone.size());
+        }
     }
+    @Override
+    public String toString() {
 
-    private String toString(Integer id) {
-        String AusgabeID = "Member ( ID = " + member.getID() + ")";
-        return AusgabeID;
+        return "Member (ID =[" + member.getID()+ "])";
     }
     public int size(){
-        return size;
+        return list.size();
     }
 
     @Override
     public Integer getID() {
-        return null;
+        return schluessel;
     }
 
 
